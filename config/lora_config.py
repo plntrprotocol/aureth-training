@@ -1,7 +1,7 @@
 """
-AURETH Training — LoRA Configuration
+OUSIA Training — LoRA Configuration
 Phase 1: Agentic + Anti-Sycophantic Base
-Base model: google/gemma-4-E4B-it
+Base model: Qwen/Qwen3.5-4B
 """
 
 from peft import LoraConfig, TaskType
@@ -13,9 +13,7 @@ LORA_ALPHA = 32  # 2x rank is standard scaling
 LORA_DROPOUT = 0.05
 
 # Which attention layers to adapt
-# Gemma4 layer 0: Gemma4ClippableAttention — q_proj is Gemma4ClippableLinear (PEFT unsupported)
-# Gemma4 layers 1-31: Gemma4TextAttention — q_proj/v_proj/k_proj/o_proj are standard Linear
-# Use layers_to_transform to skip layer 0 and target all remaining layers
+# Qwen3.5-4B: all attention projections are standard torch.nn.Linear (PEFT supported)
 TARGET_MODULES = [
     "q_proj",
     "v_proj",
@@ -51,11 +49,10 @@ COMPUTE_DTYPE = "bfloat16"  # bfloat16 on A100
 USE_GRADIENT_CHECKPOINTING = True
 
 # Model
-# Gemma-4-E4B-it: Hybrid sliding + global attention, PLE (4.5B params, ~2-3B active)
-# Apache 2.0 — fully commercially clean
-# Native function calling, built-in thinking mode, multimodal (text + image + audio)
-# MMLU-Pro: 69.4%, AIME 2026: 42.5%, TAU2-Bench: 42.2%
-MODEL_ID = "google/gemma-4-E4B-it"
+# Qwen3.5-4B: Gated DeltaNet + sparse FFN, 4B params, 262K context
+# MMLU-Pro: 79.1%, TAU2-Bench: 79.9%, LiveCodeBench: 55.8%
+# Apache 2.0 — commercially clean
+MODEL_ID = "Qwen/Qwen3.5-4B"
 
 # Dataset config
 TRAIN_DATASETS = [
@@ -80,5 +77,5 @@ TRAIN_DATASETS = [
 ]
 
 # Phase labels for tracking
-TRAINING_PHASE = "aureth_phase1_agentic_base"
-EXPERIMENT_NAME = "aureth-phase1"
+TRAINING_PHASE = "ousia_phase1_agentic_base"
+EXPERIMENT_NAME = "ousia-phase1"
