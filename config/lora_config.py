@@ -23,12 +23,11 @@ TARGET_MODULES = [
     "o_proj",
 ]
 
-# Training hyperparameters — T4-OPTIMIZED (16GB VRAM)
+# Training hyperparameters — A100-OPTIMIZED (40GB VRAM, Colab Enterprise)
 # A100: batch=4, seq=1024, ~2-3hr job
-# T4:    batch=1, seq=512,  ~12-18hr job (acceptable, same quality output)
-MAX_SEQ_LENGTH = 256  # Reduced for CPU RAM — halves activation memory
-BATCH_SIZE = 1
-GRADIENT_ACCUMULATION_STEPS = 8  # effective batch = 8 (reduced from 16)
+MAX_SEQ_LENGTH = 1024
+BATCH_SIZE = 4
+GRADIENT_ACCUMULATION_STEPS = 4  # effective batch = 16
 LEARNING_RATE = 2e-4
 NUM_EPOCHS = 2
 WARMUP_RATIO = 0.03
@@ -43,11 +42,10 @@ MAX_STEPS = -1  # -1 = epoch-based, override with NUM_EPOCHS
 # Optimizer
 OPTIMIZER = "paged_adamw_8bit"  # Paged AdamW for memory efficiency
 
-# CPU training — e2-standard-4 (16GB RAM)
-# Aggressive memory savings: float16 + gradient checkpointing
-USE_QLORA = False
-QUANTIZATION_BITS = 0
-COMPUTE_DTYPE = "float16"  # float16 on CPU
+# A100 training — QLoRA on 40GB VRAM
+USE_QLORA = True
+QUANTIZATION_BITS = 4
+COMPUTE_DTYPE = "bfloat16"  # bfloat16 on A100
 
 # Gradient checkpointing — trades ~20% speed for 50% VRAM reduction
 USE_GRADIENT_CHECKPOINTING = True
