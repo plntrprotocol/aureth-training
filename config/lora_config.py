@@ -21,11 +21,11 @@ TARGET_MODULES = [
     "o_proj",
 ]
 
-# Training hyperparameters — A100-OPTIMIZED (40GB VRAM, Colab Enterprise)
-# A100: batch=4, seq=1024, ~2-3hr job
-MAX_SEQ_LENGTH = 1024
-BATCH_SIZE = 4
-GRADIENT_ACCUMULATION_STEPS = 4  # effective batch = 16
+# Training hyperparameters — H100-OPTIMIZED (80GB VRAM, Colab Enterprise)
+# H100: batch=8, seq=2048, ~30-45min job
+MAX_SEQ_LENGTH = 2048
+BATCH_SIZE = 8
+GRADIENT_ACCUMULATION_STEPS = 4  # effective batch = 32
 LEARNING_RATE = 2e-4
 NUM_EPOCHS = 2
 WARMUP_RATIO = 0.03
