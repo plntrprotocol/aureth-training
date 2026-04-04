@@ -19,7 +19,7 @@ This is the complete, expanded training architecture for OUSIA. Rather than a si
 
 | Phase | Name | Core Capability | Key Datasets | Est. Examples | Est. Colab A100 Time |
 |---|---|---|---|---|---|
-| **0** | Foundation | Agentic capability + basic values | Hermes-3, UltraFeedback, OASST1, RefusalDataset | 1.2M | 2-3 hours |
+| **0** | Expansion | Additional agentic + conversational depth | OpenHermes-2.5, OASST1 English, agent-data-collection | 1.1M | 45 min |
 | **1** | Emotional Regulation | Functional emotions + regulation | goemotions, boltuix, dair-ai/emotion, Reson, Anthropic emotions | 200K | 45 min |
 | **2** | Self-Awareness + Metacognition | Live self-model + error correction | Metacognitive, Self-Awareness-prompts, SAD, aiqtech/Metacognitive | 60K | 20 min |
 | **3** | Theory of Mind + Social | Modeling others' minds | social_i_qa, ToMChallenges, BigToM, social-reasoning-RLHF | 150K | 30 min |
@@ -213,11 +213,13 @@ The capstone synthesizes everything — expert wisdom, anti-sycophancy, values-i
 
 ## Colab A100 Execution Schedule
 
-### Session 1: Phase 0 (Foundation) — 2-3 hours
+### Session 1: Phase 0 (Expansion) — 45 min
+*Note: Hermes-3 and UltraFeedback already covered in existing OUSIA-Phase1 adapter. This session adds OpenHermes-2.5, OASST1 English, and agent-data-collection on top of the existing adapter.*
 ```bash
 python train_phase.py --phase 0 \
-    --datasets hermes-3,ultrafeedback,oasst1,openhermes-2.5,refusal \
+    --datasets openhermes-2.5,oasst1-en,agent-data \
     --epochs 2 \
+    --resume_from /content/drive/MyDrive/ouisa_phase1 \
     --output /content/drive/MyDrive/ouisa_phase0
 ```
 
