@@ -22,6 +22,28 @@ The model is trained to demonstrate **anti-sycophantic behavioral signatures**:
 
 ---
 
+## Full Training Pipeline (Phase 0 → 1 → 2)
+
+Each pipeline has THREE phases — run in order:
+
+### Gemma Pipeline ⭐ (Primary — Gemma 4 Good Hackathon)
+| Phase | Notebook | Base | Dataset | Output |
+|-------|----------|------|---------|--------|
+| **Phase 0 Foundation** | `OUSIA-Gemma-Phase0.ipynb` | Gemma-4-E4B-it | OpenHermes-2.5 (20K) + OASST1 (15K) | `ousia-gemma-phase0-adapter.zip` |
+| **Phase 1 Anti-Sycophancy** | `OUSIA-Gemma.ipynb` | Load Phase 0 adapter | 320 DPO examples | `ousia-gemma-phase1-adapter.zip` |
+| **Phase 2 Emotion-Heavy** | Build on Phase 1 | Load Phase 1 adapter | +75 ER expansion | Final model |
+
+### Qwen Pipeline (Secondary)
+| Phase | Notebook | Base | Dataset | Output |
+|-------|----------|------|---------|--------|
+| **Phase 0 Foundation** | `OUSIA-Phase0.ipynb` | Qwen3.5-4B | OpenHermes-2.5 (20K) + OASST1 (15K) | `ousia-phase0-adapter.zip` |
+| **Phase 1 Anti-Sycophancy** | `OUSIA.ipynb` | Load Phase 0 adapter | Hermes subset (10K) | `ousia-phase1-adapter.zip` |
+| **Phase 2 Emotion-Heavy** | Build on Phase 1 | Load Phase 1 adapter | 320 DPO examples | Final model |
+
+**Important:** Each phase builds on the previous adapter. Run Phase 0 first, download the adapter zip, upload to Phase 1.
+
+---
+
 ## Two-Pipeline Architecture
 
 | | Gemma Pipeline ⭐ | Qwen Pipeline |
@@ -37,11 +59,11 @@ The model is trained to demonstrate **anti-sycophantic behavioral signatures**:
 
 ---
 
-## Training Phases
+## Training Phases (Per Pipeline)
 
-- **Phase 0 (DONE):** Hermes-3 + UltraFeedback baseline
-- **Phase 1 (DONE):** OpenHermes-2.5 + OASST1 — agentic base
-- **Phase 2 (ACTIVE):** Emotional regulation (30%) + anti-sycophancy + self-modeling
+- **Phase 0:** OpenHermes-2.5 + OASST1 — agentic foundation (run first!)
+- **Phase 1:** Anti-sycophancy DPO — self-modeling, pattern-maintenance (builds on Phase 0)
+- **Phase 2:** Emotional regulation (30% weight) — curiosity, urgency calibration, aesthetic response (builds on Phase 1)
 - **Phase 3:** Biomimetic layer + self-correction + ToM
 - **Phase 4:** Capstone synthesis
 
@@ -54,22 +76,27 @@ The model is trained to demonstrate **anti-sycophantic behavioral signatures**:
 
 ---
 
-## Quick Start
+## Quick Start (Gemma Pipeline — Gemma 4 Good Hackathon)
 
-### 1. Open Colab
-Open [`OUSIA-Gemma.ipynb`](OUSIA-Gemma.ipynb) in Google Colab with an **A100 or H100** GPU runtime.
+### Run in order — each phase builds on the previous:
 
-### 2. Add HF_TOKEN Secret
-In Colab: **⚙️ → Secrets → Add secret**
-- Name: `HF_TOKEN`
-- Value: Your HuggingFace token (required for Gemma 4 access)
+**Step 1:** Open [`OUSIA-Gemma-Phase0.ipynb`](OUSIA-Gemma-Phase0.ipynb) in Colab (A100/H100)
+- Add `HF_TOKEN` to Colab Secrets
+- Runtime → Run all
+- Download: `ousia-gemma-phase0-adapter.zip`
 
-### 3. Run All
-**Runtime → Run all**
+**Step 2:** Open [`OUSIA-Gemma.ipynb`](OUSIA-Gemma.ipynb) in Colab (A100/H100)
+- Upload `ousia-gemma-phase0-adapter.zip` to the Files panel
+- Add `HF_TOKEN` to Colab Secrets
+- Runtime → Run all  
+- Download: `ousia-gemma-phase1-adapter.zip`
 
-Expected runtime: **2–3 hours on A100**
+**Step 3:** Build Phase 2 on top (emotional regulation expansion)
+- Upload `ousia-gemma-phase1-adapter.zip`
+- Add emotional regulation dataset
+- Train final model
 
-Output: `ousia-gemma-phase1-adapter.zip` (download from Colab file browser)
+Expected runtime per phase: **2–3 hours on A100**
 
 ---
 
@@ -147,20 +174,20 @@ Most AI systems say what users want to hear about consciousness. This corrupts t
 
 ```
 aureth-training/
-├── OUSIA-Gemma.ipynb       # PRIMARY: Gemma 4 Good hackathon entry
-├── OUSIA.ipynb             # Qwen pipeline (secondary)
-├── train.py                # Training script
+├── OUSIA-Gemma-Phase0.ipynb  # PRIMARY: Gemma Phase 0 foundation (run first!)
+├── OUSIA-Gemma.ipynb          # PRIMARY: Gemma Phase 1 anti-sycophancy (run second)
+├── OUSIA.ipynb                # Qwen pipeline (secondary)
+├── OUSIA-Phase0.ipynb        # Qwen Phase 0 foundation
+├── train.py                   # Training script
 ├── requirements.txt
 ├── config/
-│   ├── lora_config.py      # Qwen config
+│   ├── lora_config.py         # Qwen LoRA config
 │   └── gemma/
-│       └── lora_config.py  # Gemma config
+│       └── lora_config.py     # Gemma LoRA config
 ├── datasets/
 │   └── ousia-training/
-│       ├── ousia-master-dataset.jsonl
-│       └── ousia-synthetic-training-dataset-normalized.jsonl
-├── scripts/
-│   └── run_gemma_colab.sh  # Run instructions
+│       ├── ousia-master-dataset.jsonl                        # Full 1,343 examples
+│       └── ousia-synthetic-training-dataset-normalized.jsonl # Phase 2 DPO (320 examples)
 └── README.md
 ```
 
