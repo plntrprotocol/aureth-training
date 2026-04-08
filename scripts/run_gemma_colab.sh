@@ -1,0 +1,25 @@
+#!/bin/bash
+# Gemma 4 Good Hackathon — Colab Run Script
+# Run this in Google Colab Pro (A100 40GB or H100)
+
+echo "OUSIA Gemma Training — Gemma 4 Good Hackathon"
+echo "=============================================="
+echo ""
+echo "Follow these steps in Colab:"
+echo ""
+echo "  1. Open OUSIA-Gemma.ipynb in Colab"
+echo "  2. Add HF_TOKEN to Colab Secrets (🔐 → Add secret)"
+echo "     - Key: HF_TOKEN"
+echo "     - Value: your HuggingFace access token (hf_...)"
+echo "  3. Runtime → Change runtime type → GPU (A100 40GB or H100)"
+echo "  4. Runtime → Run all"
+echo ""
+echo "Expected runtime: 2-3 hours on A100"
+echo "Dataset: ousia-synthetic-training-dataset (245 examples, DPO format)"
+echo "Target: Anti-sycophantic reasoning + emotional regulation + self-modeling"
+echo ""
+echo "Output: ousia-gemma4-good-adapter.zip (download from Colab Files panel)"
+echo ""
+echo "Phase 2: Emotional Regulation @ 30% weight"
+echo "  - Phase 2 dataset builds on Phase 1 weights"
+echo "  - Emotional regulation: anti-sycophancy + stable self-model"
